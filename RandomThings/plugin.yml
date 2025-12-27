@@ -1,0 +1,13 @@
+main: me.EthanBilbrey.RandomThings.Main
+name: RandomThings
+version: 1.0
+api-version: 1.17
+author: Ethan Bilbrey
+description: Random things happen to players every so often.
+commands:
+   randomthings:
+      usage: /<command>
+      description: use to change state of challenge
+   timeinterval:
+      usage: /<command>
+      description: used to change time interval of challenge

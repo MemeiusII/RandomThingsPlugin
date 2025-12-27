@@ -1,0 +1,65 @@
+package me.EthanBilbrey.RandomThings;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+public class FileHandler 
+{
+	private static File file;
+	private static FileConfiguration customFile;
+	
+	public static void setup() 
+	{
+		try 
+		{
+			file = new File(Bukkit.getServer().getPluginManager().getPlugin("RandomThings").getDataFolder(), "PluginSettings.yml");
+			
+			if(!file.exists()) 
+			{
+				customFile = YamlConfiguration.loadConfiguration(file);
+				file.getParentFile().mkdirs();
+				
+				file.createNewFile();
+				customFile.set("TimeInterval", 3);
+				customFile.save(file);
+			}
+		}
+		catch(IOException e) 
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void save() 
+	{
+		try 
+		{
+			customFile.save(file);
+		}
+		catch(IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	//call before using file
+	public static void reload() 
+	{
+		customFile = YamlConfiguration.loadConfiguration(file);
+	}
+	
+	public static void setValue(String path, int value) 
+	{
+		customFile.set(path, value);
+	}
+	
+	public static long getValue(String path) 
+	{
+		long value = Long.valueOf(String.valueOf(customFile.get(path)));
+		return value;
+	}
+}

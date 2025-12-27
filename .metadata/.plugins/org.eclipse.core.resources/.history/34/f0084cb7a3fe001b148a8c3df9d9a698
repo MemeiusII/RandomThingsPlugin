@@ -1,0 +1,34 @@
+package me.EthanBilbrey.RandomThings;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin implements CommandExecutor
+{
+	public static boolean challengeOn = false;
+	
+	@Override
+	public void onEnable() 
+	{
+		Bukkit.getServer().getPluginManager().registerEvents(new ChallengeHandler(), this);
+	}
+	
+	@Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) 
+	{
+		if(command.getName().equals("randomthings") && label.equals("on")) 
+		{
+			challengeOn = true;
+			ChallengeHandler ch = new ChallengeHandler();
+			ch.startTimer();
+		}
+		else if(command.getName().equals("randomthings") && label.equals("off")) 
+		{
+			
+		}
+		return true;
+	}
+}

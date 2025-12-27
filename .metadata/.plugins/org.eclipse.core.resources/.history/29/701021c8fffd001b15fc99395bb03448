@@ -1,0 +1,64 @@
+package me.EthanBilbrey.RandomThings;
+
+public class FileHandler 
+{
+	private static File file;
+	private static FileConfiguration customFile;
+	
+	public static void setup() 
+	{
+		try 
+		{
+			file = new File(Bukkit.getServer().getPluginManager().getPlugin("ChaosPlugin").getDataFolder(), "PluginSettings.yml");
+			
+			if(!file.exists()) 
+			{
+				customFile = YamlConfiguration.loadConfiguration(file);
+				file.getParentFile().mkdirs();
+				
+				file.createNewFile();
+				customFile.createSection("Plugins");
+				customFile.set("Plugins.RainLava", "off");
+				customFile.set("Plugins.GravityBlocks", "off");
+				customFile.set("Plugins.LookExplosions", "off");
+				customFile.set("Plugins.ItemDropMultiply", "off");
+				customFile.set("Plugins.BlockAttack", "off");
+				customFile.set("Plugins.BedrockWorld", "off");
+				customFile.save(file);
+			}
+		}
+		catch(IOException e) 
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void save() 
+	{
+		try 
+		{
+			customFile.save(file);
+		}
+		catch(IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	//call before using file
+	public static void reload() 
+	{
+		customFile = YamlConfiguration.loadConfiguration(file);
+	}
+	
+	public static void setValue(String path, String value) 
+	{
+		customFile.set(path, value);
+	}
+	
+	public static String getValue(String path) 
+	{
+		String value = (String) customFile.get(path);
+		return value;
+	}
+}

@@ -1,0 +1,376 @@
+package me.EthanBilbrey.RandomThings;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+public class ChallengeHandler implements Listener
+{
+	public Player player;
+	public int taskId;
+	public void startTimer() 
+	{
+		if(Main.challengeOn) 
+		{
+			FileHandler.reload();
+			long timeInterval = Long.parseLong(FileHandler.getValue("TimeInterval"));
+			
+			//get list of players then selects one at random
+			List<Player> players = new ArrayList<Player>();
+			for(Player p : Bukkit.getOnlinePlayers()) 
+			{
+				players.add(p);
+			}
+			player = players.get((int) (Math.random() * (players.size() - 1)));
+			
+			int rand = (int) ((Math.random() * 12) + 1);
+			switch(rand) 
+			{
+				case 1:
+					autumn(player);
+					break;
+				case 2:
+					trapped(player);
+					break;
+				case 3:
+					trappedWater(player);
+					break;
+				case 4:
+					newSkyblock(player);
+					break;
+				case 5:
+					icedOut(player);
+					break;
+				case 6:
+					blockShuffle(player);
+					break;
+				case 7:
+					bigNoseAngry(player);
+					break;
+				case 8:
+					tntSpawn(player);
+					break;
+				case 9:
+					creeperSpawn(player);
+					break;
+				case 10:
+					chargedCreeperSpawn(player);
+					break;
+				case 11:
+					chorusTeleport(player);
+					break;
+				case 12:
+					suicide(player);
+					break;
+			}
+			
+			taskId = Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(Main.class), () -> {
+				startTimer();
+			}, 200);
+		}
+	}
+	
+	//Removes all leaves within a 10 block radius
+	public static void autumn(Player p) 
+	{
+		for(Player player : Bukkit.getOnlinePlayers()) 
+		{
+			if(player.equals(p)) 
+			{
+				player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : Autumn");
+			}
+			else 
+			{
+				player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : Autumn");
+			}
+		}
+		for(int x = p.getLocation().getBlockX() - 10; x <= p.getLocation().getBlockX() + 10; x++) 
+		{
+			for(int y = p.getLocation().getBlockY() - 10; y <= p.getLocation().getBlockY() + 10; y++) 
+			{
+				for(int z = p.getLocation().getBlockZ() - 10; z <= p.getLocation().getBlockZ() + 10; z++) 
+				{
+					Block b = p.getWorld().getBlockAt(x, y, z);
+					if(b.getType().equals(Material.ACACIA_LEAVES) ||
+							b.getType().equals(Material.AZALEA_LEAVES) ||
+							b.getType().equals(Material.BIRCH_LEAVES) ||
+							b.getType().equals(Material.DARK_OAK_LEAVES) ||
+							b.getType().equals(Material.FLOWERING_AZALEA_LEAVES) ||
+							b.getType().equals(Material.JUNGLE_LEAVES) ||
+							b.getType().equals(Material.OAK_LEAVES) ||
+							b.getType().equals(Material.SPRUCE_LEAVES)) 
+					{
+						b.setType(Material.AIR);
+					}
+				}
+			}
+		}
+	}
+	
+	//Traps player in obsidian
+	public void trapped(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : Trapped!");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : Trapped!");
+		}
+		Block b = p.getWorld().getBlockAt(p.getLocation());
+		p.getWorld().getBlockAt(b.getX(), b.getY(), b.getZ()).setType(Material.OBSIDIAN);
+		p.getWorld().getBlockAt(b.getX() + 1, b.getY() + 1, b.getZ()).setType(Material.OBSIDIAN);
+		p.getWorld().getBlockAt(b.getX() - 1, b.getY() + 1, b.getZ()).setType(Material.OBSIDIAN);
+		p.getWorld().getBlockAt(b.getX(), b.getY() + 1, b.getZ() + 1).setType(Material.OBSIDIAN);
+		p.getWorld().getBlockAt(b.getX(), b.getY() + 1, b.getZ() - 1).setType(Material.OBSIDIAN);
+		p.getWorld().getBlockAt(b.getX(), b.getY() + 3, b.getZ()).setType(Material.OBSIDIAN);
+		p.teleport(b.getLocation().add(0.5, 1.0, 0.5));
+	}
+	
+	//Trapped but head is in water
+	public void trappedWater(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : Trapped! (with water)");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : Trapped! (with water)");
+		}
+		Block b = p.getWorld().getBlockAt(p.getLocation());
+		p.getWorld().getBlockAt(b.getX(), b.getY() + 2, b.getZ()).setType(Material.WATER);
+		p.getWorld().getBlockAt(b.getX(), b.getY(), b.getZ()).setType(Material.OBSIDIAN);
+		p.getWorld().getBlockAt(b.getX() + 1, b.getY() + 1, b.getZ()).setType(Material.OBSIDIAN);
+		p.getWorld().getBlockAt(b.getX() - 1, b.getY() + 1, b.getZ()).setType(Material.OBSIDIAN);
+		p.getWorld().getBlockAt(b.getX(), b.getY() + 1, b.getZ() + 1).setType(Material.OBSIDIAN);
+		p.getWorld().getBlockAt(b.getX(), b.getY() + 1, b.getZ() - 1).setType(Material.OBSIDIAN);
+		p.getWorld().getBlockAt(b.getX(), b.getY() + 3, b.getZ()).setType(Material.OBSIDIAN);
+		p.teleport(b.getLocation().add(0.5, 1.0, 0.5));
+	}
+	
+	//teleport player 250 blocks up and places a block under them
+	public void newSkyblock(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : New Skyblock");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : New Skyblock");
+		}
+		Block dirt = p.getWorld().getBlockAt(p.getLocation().getBlockX(), p.getLocation().getBlockY() + (250 - p.getLocation().getBlockY()), p.getLocation().getBlockZ());
+		dirt.setType(Material.DIRT);
+		p.getWorld().getBlockAt(dirt.getLocation().add(1.0, 0.0, 0.0)).setType(Material.BARRIER);
+		p.getWorld().getBlockAt(dirt.getLocation().subtract(1.0, 0.0, 0.0)).setType(Material.BARRIER);
+		p.getWorld().getBlockAt(dirt.getLocation().add(0.0, 0.0, 1.0)).setType(Material.BARRIER);
+		p.getWorld().getBlockAt(dirt.getLocation().subtract(0.0, 0.0, 1.0)).setType(Material.BARRIER);
+		p.getWorld().getBlockAt(dirt.getLocation().add(1.0, 1.0, 0.0)).setType(Material.BARRIER);
+		p.getWorld().getBlockAt(dirt.getLocation().subtract(1.0, 1.0, 0.0)).setType(Material.BARRIER);
+		p.getWorld().getBlockAt(dirt.getLocation().add(0.0, 1.0, 1.0)).setType(Material.BARRIER);
+		p.getWorld().getBlockAt(dirt.getLocation().subtract(0.0, 1.0, 1.0)).setType(Material.BARRIER);
+		p.teleport(dirt.getLocation().add(0.0, 1.0, 0.0));
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(Main.class), () -> {
+			p.getWorld().getBlockAt(dirt.getLocation().add(1.0, 0.0, 0.0)).setType(Material.AIR);
+			p.getWorld().getBlockAt(dirt.getLocation().subtract(1.0, 0.0, 0.0)).setType(Material.AIR);
+			p.getWorld().getBlockAt(dirt.getLocation().add(0.0, 0.0, 1.0)).setType(Material.AIR);
+			p.getWorld().getBlockAt(dirt.getLocation().subtract(0.0, 0.0, 1.0)).setType(Material.AIR);
+			p.getWorld().getBlockAt(dirt.getLocation().add(1.0, 1.0, 0.0)).setType(Material.AIR);
+			p.getWorld().getBlockAt(dirt.getLocation().subtract(1.0, 1.0, 0.0)).setType(Material.AIR);
+			p.getWorld().getBlockAt(dirt.getLocation().add(0.0, 1.0, 1.0)).setType(Material.AIR);
+			p.getWorld().getBlockAt(dirt.getLocation().subtract(0.0, 1.0, 1.0)).setType(Material.AIR);
+		}, 40L);
+		
+	}
+	
+	public void icedOut(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : Iced out!");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : Iced out!");
+		}
+		p.getLocation().subtract(0.0, 1.0, 0.0).getBlock().setType(Material.DIAMOND_BLOCK);
+	}
+	
+	public void blockShuffle(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : Block Shuffle!");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : Block Shuffle!");
+		}
+		List<Block> blocks = new ArrayList<Block>();
+		for(int x = p.getLocation().getBlockX() - 5; x <= p.getLocation().getBlockX() + 5; x++) 
+		{
+			for(int y = p.getLocation().getBlockY() - 1; y <= p.getLocation().getBlockY() + 5; y++) 
+			{
+				for(int z = p.getLocation().getBlockZ() - 5; z <= p.getLocation().getBlockZ() + 5; z++) 
+				{
+					Block b = p.getWorld().getBlockAt(x, y, z);
+					if(!b.getType().equals(Material.AIR) && !b.getType().equals(Material.CHEST)) 
+					{
+						blocks.add(b);
+					}
+				}
+			}
+		}
+		Block b1 = blocks.get((int) (Math.random() * blocks.size()));
+		Block b2 = blocks.get((int) (Math.random() * blocks.size()));
+		
+		Material tempMaterial = b1.getType();
+		BlockData tempBlockData = b1.getBlockData();
+		b1.setType(b2.getType());
+		b1.setBlockData(b2.getBlockData());
+		b2.setType(tempMaterial);
+		b2.setBlockData(tempBlockData);
+	}
+	
+	//Player receives bad omen effect
+	public void bigNoseAngry(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : You made the big nose guys angry");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : You made the big nose guys angry");
+		}
+		p.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 12000, 1));
+	}
+	
+	//Spawn tnt on player
+	public int time = 3;
+	public int tntTaskId;
+	public void tntSpawn(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : TNT spawning in...");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : TNT spawn");
+		}
+		tntTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(Main.class), () -> {
+			if(time <= 0) 
+			{
+				p.getWorld().spawnEntity(p.getLocation(), EntityType.PRIMED_TNT);
+				cancelTask(tntTaskId);
+			}
+			else 
+			{
+				p.sendMessage(String.valueOf(time));
+				time--;
+			}
+		}, 0L, 20L);
+	}
+	
+	//Spawn creeper on player
+	public void creeperSpawn(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : Aw man");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : Aw man");
+		}
+		p.getWorld().spawnEntity(p.getLocation(), EntityType.CREEPER);
+	}
+	
+	//Spawns charged creeper on player
+	public void chargedCreeperSpawn(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : AWWW MAN!");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : AWWW MAN!");
+		}
+		Creeper c = (Creeper) p.getWorld().spawnEntity(p.getLocation(), EntityType.CREEPER);
+		c.setPowered(true);
+	}
+	
+	//Teleport player like a chorus fruit
+	public void chorusTeleport(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : What happend?");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : What happened?");
+		}
+		int rand = (int) ((Math.random() * 3) + 1);
+		switch(rand) 
+		{
+			case 1:
+				double distx = (Math.random() * 8) - 8;
+				p.teleport(p.getLocation().add(distx, 0.0, 0.0));
+				p.getWorld().playEffect(p.getLocation(), Effect.ENDER_SIGNAL, 1);
+				p.getWorld().playSound(p.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1.0f, 1.0f);
+				break;
+			case 2:
+				double disty = (Math.random() * 8) - 1;
+				p.teleport(p.getLocation().add(disty, 0.0, 0.0));
+				p.getWorld().playEffect(p.getLocation(), Effect.ENDER_SIGNAL, 1);
+				p.getWorld().playSound(p.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1.0f, 1.0f);
+				break;
+			case 3:
+				double distz = (Math.random() * 8) - 8;
+				p.teleport(p.getLocation().add(distz, 0.0, 0.0));
+				p.getWorld().playEffect(p.getLocation(), Effect.ENDER_SIGNAL, 1);
+				p.getWorld().playSound(p.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1.0f, 1.0f);
+				break;
+		}
+	}
+	
+	//kills player
+	public void suicide(Player p) 
+	{
+		if(player.equals(p)) 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + "You : Suicide");
+		}
+		else 
+		{
+			player.sendMessage(ChatColor.BOLD + "" + ChatColor.GREEN + player.getDisplayName() + " : Suicide");
+		}
+		p.setHealth(0.0);
+	}
+	
+	public void cancelTask(int id) 
+	{
+		Bukkit.getScheduler().cancelTask(id);
+	}
+}

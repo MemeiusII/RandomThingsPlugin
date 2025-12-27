@@ -1,0 +1,61 @@
+package me.EthanBilbrey.RandomThings;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import net.md_5.bungee.api.ChatColor;
+
+public class Main extends JavaPlugin implements CommandExecutor
+{
+	public static boolean challengeOn = false;
+	
+	@Override
+	public void onEnable() 
+	{
+		Bukkit.getServer().getPluginManager().registerEvents(new ChallengeHandler(), this);
+		this.getCommand("randomthings").setExecutor(this);
+		this.getCommand("timeinterval").setExecutor(this);
+	}
+	
+	@Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) 
+	{
+		if(sender instanceof Player) 
+		{
+			if(command.getName().equals("randomthings") && label.equals("on")) 
+			{
+				challengeOn = true;
+				ChallengeHandler ch = new ChallengeHandler();
+				for(Player p : Bukkit.getOnlinePlayers()) 
+				{
+					p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Challenge Started");
+				}
+				FileHandler.reload();
+				long timeInterval = Long.parseLong(FileHandler.getValue("TimeInterval"));
+				Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+					ch.startTimer();
+				}, timeInterval);
+				
+			}
+			else if(command.getName().equals("randomthings") && label.equals("off")) 
+			{
+				challengeOn = false;
+				for(Player p : Bukkit.getOnlinePlayers()) 
+				{
+					p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Challenge Stopped");
+				}
+			}
+			else if(command.getName().equals("timeinterval")) 
+			{
+				FileHandler.reload();
+				FileHandler.setValue("TimeInterval", label);
+				((Player) sender).sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Time interval changed to " + label);
+			}
+		}
+		return true;
+	}
+}
